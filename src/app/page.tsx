@@ -1,31 +1,39 @@
-"use client"
-import Image from "next/image";
-import { useState } from "react";
+'use client'
+import React, { useEffect, useState } from 'react'
+import Test1 from './tests/test1/page'
+import { supabase } from '@/CreateClient';
+import { User } from './types/Types'
+import Test2 from './tests/test2/page';
+import Test3Props from './tests/test3/page';
+const Home = () => {
 
-export default function Home() {
-  const [word, setWord] = useState<string>("");
-  const [isPalindrome, setIsPalindrome] = useState<boolean>()
 
-  const handleWordChange = (e) => {
-    setWord(e.target.value)
-  }
-  const wordToArray = word.split("");
-  console.log(wordToArray)
-  const reversedArray = wordToArray.reverse().join("");
+  const [users, setUsers] = useState<User[] | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(true)
 
-  const checkIfPalindrome = () => {
-    setIsPalindrome(word === reversedArray);
-  }
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const { data, error } = await supabase
+        .from('users')
+        .select()
+
+      if (error) {
+        alert(error)
+      }
+
+      if (data) {
+        setUsers(data)
+        console.log(data);
+      }
+    }
+    fetchUsers();
+  }, [])
+
   return (
-    <div className="font-bold underline m-2 p-2">
-      <input
-        type="text"
-        placeholder="enter a word"
-        value={word ?? ""}
-        onChange={handleWordChange}
-        className="border-2 p-2 m-2" />
-      <button className="border-2 p-2 m-2" onClick={checkIfPalindrome}> Check if Palindrome </button>
-      <p> {isPalindrome ? "The word is Palindrome" : "The word is not Palindrome"}</p>
+    <div>
+    <Test3Props id={1} name={"allen"} age={21} />
     </div>
-  );
+  )
 }
+
+export default Home
